@@ -23,4 +23,9 @@ public class KafkaTopicConfig {
         return new KafkaAdmin(configs);
     }
 
+    @Bean
+    public NewTopic newsTopic() {
+        return new NewTopic("news", 1, (short) 1);
+    }
+
 }

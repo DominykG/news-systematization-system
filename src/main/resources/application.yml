@@ -14,3 +14,5 @@ spring:
     consumer:
       group-id: nss
       topic: news
+    producer:
+      topic: news
