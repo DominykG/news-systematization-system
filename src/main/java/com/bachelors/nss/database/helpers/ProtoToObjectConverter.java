@@ -1,7 +1,7 @@
 package com.bachelors.nss.database.helpers;
 
 import com.bachelors.nss.database.models.NewsArticle;
-import com.bachelors.nss.protobuf.NewsArticle.Article;
+import com.bachelors.nss.protobuf.NewsArticleProto.Article;
 import com.google.protobuf.Timestamp;
 
 import java.time.Instant;
@@ -12,13 +12,13 @@ public final class ProtoToObjectConverter {
 
     public static NewsArticle parseProtoToObject(Article protoArticle) {
         return NewsArticle.builder()
-                .sourceName(protoArticle.getSourceName())
+                .source(protoArticle.getSourceName())
                 .author(protoArticle.getAuthor())
                 .title(protoArticle.getTitle())
                 .description(protoArticle.getDescription())
                 .url(protoArticle.getUrl())
-                .imageUrl(protoArticle.getImageUrl())
-                .datePublish(protoTimestampToLocalDateTime(protoArticle.getDatePublish()))
+                .urlToImage(protoArticle.getImageUrl())
+                .publishedAt(protoTimestampToLocalDateTime(protoArticle.getDatePublish()))
                 .content(protoArticle.getContent())
                 .build();
     }

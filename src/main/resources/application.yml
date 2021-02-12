@@ -3,6 +3,7 @@ spring:
     console:
       enabled: true
   datasource:
+    data: file:./sql/*.sql
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
     username: sa

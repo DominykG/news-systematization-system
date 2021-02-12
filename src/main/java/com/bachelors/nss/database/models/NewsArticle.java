@@ -24,8 +24,8 @@ public class NewsArticle implements Serializable {
     @Column(name = "ID", updatable = false)
     private Long id;
 
-    @Column(name = "SOURCE_NAME", nullable = false)
-    private String sourceName;
+    @Column(name = "SOURCE", nullable = false)
+    private String source;
 
     @Column(name = "AUTHOR", nullable = false)
     private String author;
@@ -33,18 +33,18 @@ public class NewsArticle implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "DESCRIPTION", nullable = false)
+    @Column(name = "DESCRIPTION", nullable = false, length = 2048)
     private String description;
 
-    @Column(name = "URL", nullable = false)
+    @Column(name = "URL", nullable = false, length = 1024)
     private String url;
 
-    @Column(name = "IMAGE_URL", nullable = false)
-    private String imageUrl;
+    @Column(name = "URL_TO_IMAGE", nullable = false, length = 1024)
+    private String urlToImage;
 
-    @Column(name = "DATE_PUBLISH", nullable = false)
-    private LocalDateTime datePublish;
+    @Column(name = "PUBLISHED_AT", nullable = false)
+    private LocalDateTime publishedAt;
 
-    @Column(name = "CONTENT", nullable = false)
+    @Column(name = "CONTENT", nullable = false, length = 2048)
     private String content;
 }

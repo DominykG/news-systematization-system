@@ -1,7 +1,7 @@
 package com.bachelors.nss.kafka.consumers;
 
 import com.bachelors.nss.database.repositories.ArticleRepository;
-import com.bachelors.nss.protobuf.NewsArticle.Article;
+import com.bachelors.nss.protobuf.NewsArticleProto.Article;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
