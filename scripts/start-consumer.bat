@@ -1,1 +1,0 @@
-D:\_Bachelors\kafka_2.13-2.6.0\bin\windows\kafka-console-consumer.bat --topic news --from-beginning --bootstrap-server localhost:9092
