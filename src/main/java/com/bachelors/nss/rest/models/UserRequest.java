@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -16,10 +15,9 @@ import java.util.List;
 public class UserRequest {
 
     private final String name;
-    //String = term/phrase; Boolean = exact match
-    private final List<String> searchTerms;
-    private final List<String> excludedTerms;
-    private final List<String> sources;
+    private final Set<String> searchTerms;
+    private final Set<String> excludedTerms;
+    private final Set<String> sources;//names
     private final LocalDateTime from;
 
 }

@@ -1,19 +1,18 @@
 package com.bachelors.nss.db.models;
 
-import lombok.Getter;
-import lombok.ToString;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
+@Setter
+@Builder
 @ToString
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SOURCE")
@@ -23,9 +22,10 @@ public class Source implements Serializable {
     @Column(name = "S_ID", updatable = false, nullable = false)
     private String id;
 
-    @Column(name = "S_NAME", nullable = false)
+    @Column(name = "S_NAME", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "sources")
-    private Set<Client> clients;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "sources", cascade = CascadeType.ALL)
+    private Set<Client> clients = new HashSet<>();
 }

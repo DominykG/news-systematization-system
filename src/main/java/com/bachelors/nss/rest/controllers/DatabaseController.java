@@ -9,4 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/nss/v2/")
 public class DatabaseController {
 
+    //TODO: Information viewing by user name
+
 }

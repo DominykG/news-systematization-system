@@ -1,11 +1,10 @@
 package com.bachelors.nss.rest.validation;
 
+import com.bachelors.nss.db.models.Source;
 import com.bachelors.nss.db.repositories.SourceRepository;
 import com.bachelors.nss.errors.ValidationError;
 import com.bachelors.nss.rest.models.UserRequest;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -24,20 +23,13 @@ public final class UserRequestValidator {
 
     private static final Set<ValidationError> errors = new HashSet<>();
 
-    private static SourceRepository repository;
-
-    @Autowired
-    public UserRequestValidator(SourceRepository repository) {
-        UserRequestValidator.repository = repository;
-    }
-
-    public static Set<ValidationError> validateUserRequest(UserRequest request) {
+    public static Set<ValidationError> validateUserRequest(UserRequest request, SourceRepository sourceRepository) {
         errors.clear();
 
         validateName(request);
         validateSearchTerms(request);
         validateExcludedTerms(request);
-        validateSources(request);
+        validateSources(request, sourceRepository);
         validateFrom(request);
 
         return errors;
@@ -74,11 +66,6 @@ public final class UserRequestValidator {
                             .errorMessage(String.format("'%s'. Is longer than 100 characters.", searchTerm))
                             .build());
             });
-        } catch (HttpMessageNotReadableException e){
-            errors.add(ValidationError.builder()
-                    .fieldName(SEARCH_TERMS_FIELD)
-                    .errorMessage("Field must be a List.")
-                    .build());
         } catch (NullPointerException e) {
             errors.add(ValidationError.builder()
                     .fieldName(SEARCH_TERMS_FIELD)
@@ -99,19 +86,20 @@ public final class UserRequestValidator {
         }
     }
 
-    private static void validateSources(UserRequest request) {
+    private static void validateSources(UserRequest request, SourceRepository sourceRepository) {
         if (request.getSources() != null) {
             if (request.getSources().size() > 20) {
                 errors.add(ValidationError.builder()
                         .fieldName(SOURCES_FIELD)
-                        .errorMessage("20 or less sources allowed")
+                        .errorMessage("20 or less sources allowed.")
                         .build());
             }
             for (String source : request.getSources()) {
-                if (!repository.existsById(source)) {
+                Source s = sourceRepository.findByName(source);
+                if (s == null) {
                     errors.add(ValidationError.builder()
                             .fieldName(SOURCES_FIELD)
-                            .errorMessage(String.format("'%s' is not a valid source", source))
+                            .errorMessage(String.format("Source with name provided is invalid. Name: '%s'.", source))
                             .build());
                 }
             }

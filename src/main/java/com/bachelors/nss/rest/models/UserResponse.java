@@ -1,11 +1,12 @@
 package com.bachelors.nss.rest.models;
 
+import com.bachelors.nss.db.models.Source;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -13,11 +14,12 @@ import java.util.List;
 @EqualsAndHashCode
 public class UserResponse {
 
-    public static final String GENERAL_INFORMATION = "News will be published to the Kafka topic every day" +
+    public final String generalInformation = "News will be published to the Kafka topic every day" +
             " at 18:00 UTC and will be saved to be consumed for 14 calendar days, older news will be deleted";
 
+    private final String name;
     private final String kafkaTopicName;
     private final String searchQuery;
-    private final List<String> sources;
+    private final Set<Source> sources;
 
 }
