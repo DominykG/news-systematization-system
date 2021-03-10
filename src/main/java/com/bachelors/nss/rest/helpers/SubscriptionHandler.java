@@ -1,6 +1,8 @@
 package com.bachelors.nss.rest.helpers;
 
+import com.bachelors.nss.db.repositories.SourceRepository;
 import com.bachelors.nss.rest.models.UserRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import static com.bachelors.nss.rest.validation.UserRequestValidator.validateUserRequest;
@@ -25,6 +27,5 @@ public class SubscriptionHandler {
 
         return ResponseEntity.ok(request);
     }
-
 
 }

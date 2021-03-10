@@ -17,9 +17,9 @@ public class UserRequest {
 
     private final String name;
     //String = term/phrase; Boolean = exact match
-    private final List<HashMap<String, Boolean>> searchTerms;
+    private final List<String> searchTerms;
     private final List<String> excludedTerms;
-    private final List<String> preferredSources;
+    private final List<String> sources;
     private final LocalDateTime from;
 
 }
