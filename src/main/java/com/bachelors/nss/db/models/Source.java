@@ -1,6 +1,6 @@
 package com.bachelors.nss.db.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class Source implements Serializable {
     @Column(name = "S_NAME", nullable = false, unique = true)
     private String name;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "sources", cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ManyToMany(mappedBy = "sources", cascade = CascadeType.REMOVE)
     private Set<Client> clients = new HashSet<>();
 }

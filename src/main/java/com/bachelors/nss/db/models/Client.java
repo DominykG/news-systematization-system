@@ -1,6 +1,6 @@
 package com.bachelors.nss.db.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,19 +26,18 @@ public class Client implements Serializable {
     @Column(name = "C_NAME", nullable = false, updatable = false)
     private String name;
 
-
     @Column(name = "C_QUERY", nullable = false, updatable = false)
     private String query;
 
     @Column(name = "C_DATE_FROM")
     private LocalDateTime dateFrom;
 
-    @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "CLIENT_SOURCE",
             joinColumns = { @JoinColumn(name = "CLIENT_ID") },
             inverseJoinColumns = { @JoinColumn(name = "SOURCE_ID") }
     )
+    @JsonManagedReference
     private Set<Source> sources = new HashSet<>();
 }

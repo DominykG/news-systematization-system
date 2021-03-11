@@ -8,6 +8,7 @@ import com.bachelors.nss.rest.models.UserRequest;
 import com.bachelors.nss.rest.models.UserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +19,13 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.bachelors.nss.rest.validation.UserRequestValidator.validateUserRequest;
 
 @Log4j2
 @Component
 public class SubscriptionHandler {
-
-    //TODO: Unsubscribe by user topic name
 
     private static ClientRepository clientRepository;
     private static SourceRepository sourceRepository;
@@ -36,7 +36,7 @@ public class SubscriptionHandler {
         SubscriptionHandler.sourceRepository = sourceRepository;
     }
 
-    public static ResponseEntity<Object> Subscribe(UserRequest request) {
+    public static ResponseEntity<Object> subscribe(UserRequest request) {
         var errors = validateUserRequest(request, sourceRepository);
 
         if(!errors.isEmpty())
@@ -109,9 +109,10 @@ public class SubscriptionHandler {
 
     static void executeKafkaTopicScript(String filename) {
         try {
-            Runtime.getRuntime().exec("cmd /c " + filename);
+            Runtime.getRuntime().exec("cmd /c " + filename); //add `start \"\"` after `/c` to see the console
+            TimeUnit.SECONDS.sleep(1L);
             log.info("File executed: " + filename);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e);
         }
     }
@@ -152,4 +153,13 @@ public class SubscriptionHandler {
         return s;
     }
 
+    public static ResponseEntity<Object> unsubscribe(String topic) {
+        try {
+            clientRepository.deleteById(topic);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.badRequest().body("No such topic exists");
+        }
+
+        return ResponseEntity.ok("You have been successfully unsubscribed");
+    }
 }
