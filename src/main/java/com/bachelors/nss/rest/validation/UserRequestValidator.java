@@ -59,7 +59,7 @@ public final class UserRequestValidator {
                         .errorMessage("At least one search term must be present.")
                         .build());
             }
-            request.getSearchTerms().forEach((searchTerm) -> {
+            request.getSearchTerms().stream().forEach((searchTerm) -> {
                 if (searchTerm.length() > 100)
                     errors.add(ValidationError.builder()
                             .fieldName(SEARCH_TERMS_FIELD)
@@ -76,7 +76,7 @@ public final class UserRequestValidator {
 
     private static void validateExcludedTerms(UserRequest request) {
         if (request.getExcludedTerms() != null) {
-            request.getExcludedTerms().forEach((excludedTerm) -> {
+            request.getExcludedTerms().stream().forEach((excludedTerm) -> {
                 if (excludedTerm.length() > 100)
                     errors.add(ValidationError.builder()
                             .fieldName(EXCLUDED_TERMS_FIELD)
@@ -107,7 +107,7 @@ public final class UserRequestValidator {
     }
 
     private static void validateFrom(UserRequest request) {
-        if (request.getFrom().isAfter(LocalDateTime.now())) {
+        if (request.getFrom() != null && request.getFrom().isAfter(LocalDateTime.now())) {
             errors.add(ValidationError.builder()
                     .fieldName(FROM_FIELD)
                     .errorMessage("Date is later than today.")

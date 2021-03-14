@@ -132,12 +132,15 @@ public class SubscriptionHandler {
                             Set<Source> sources,
                             String kafkaTopic) {
         Client client = Client.builder()
-                .dateFrom(from)
                 .name(name)
                 .query(searchQuery)
                 .sources(sources)
                 .assignedKafkaTopic(kafkaTopic)
                 .build();
+
+        if (from != null) {
+            client.setDateFrom(from);
+        }
 
         for (Source source : sources) {
             source.getClients().add(client);
