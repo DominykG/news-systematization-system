@@ -10,8 +10,6 @@ import java.util.Set;
 
 @Getter
 @Builder
-@ToString
-@EqualsAndHashCode
 public class UserResponse {
 
     public final String generalInformation = "News will be published to the Kafka topic every day" +

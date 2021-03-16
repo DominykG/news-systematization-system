@@ -4,22 +4,18 @@ import com.bachelors.nss.db.models.Source;
 import com.bachelors.nss.db.repositories.SourceRepository;
 import com.bachelors.nss.errors.ValidationError;
 import com.bachelors.nss.rest.models.UserRequest;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Log4j2
-@Component
 public final class UserRequestValidator {
 
-    public static final String NAME_FIELD = "name";
-    public static final String SEARCH_TERMS_FIELD = "searchTerms";
-    public static final String EXCLUDED_TERMS_FIELD = "excludedTerms";
-    public static final String SOURCES_FIELD = "sources";
-    public static final String FROM_FIELD = "from";
+    private static final String NAME_FIELD = "name";
+    private static final String SEARCH_TERMS_FIELD = "searchTerms";
+    private static final String EXCLUDED_TERMS_FIELD = "excludedTerms";
+    private static final String SOURCES_FIELD = "sources";
+    private static final String FROM_FIELD = "from";
 
     private static final Set<ValidationError> errors = new HashSet<>();
 
@@ -38,39 +34,27 @@ public final class UserRequestValidator {
     private static void validateName(UserRequest request) {
         try {
             if (request.getName().length() < 3 || request.getName().length() > 20) {
-                errors.add(ValidationError.builder()
-                        .fieldName(NAME_FIELD)
-                        .errorMessage("Name must be more than 3 and less than 20 characters long.")
-                        .build());
+                errors.add(ValidationError.of(  NAME_FIELD,
+                        "Name must be more than 3 and less than 20 characters long."));
             }
         } catch (NullPointerException e) {
-            errors.add(ValidationError.builder()
-                    .fieldName(NAME_FIELD)
-                    .errorMessage("Field must be present.")
-                    .build());
+            errors.add(ValidationError.of(NAME_FIELD, "Field must be present."));
         }
     }
 
     private static void validateSearchTerms(UserRequest request) {
         try {
             if (request.getSearchTerms().size() < 1) {
-                errors.add(ValidationError.builder()
-                        .fieldName(SEARCH_TERMS_FIELD)
-                        .errorMessage("At least one search term must be present.")
-                        .build());
+                errors.add(ValidationError.of(SEARCH_TERMS_FIELD,
+                        "At least one search term must be present."));
             }
             request.getSearchTerms().stream().forEach((searchTerm) -> {
                 if (searchTerm.length() > 100)
-                    errors.add(ValidationError.builder()
-                            .fieldName(SEARCH_TERMS_FIELD)
-                            .errorMessage(String.format("'%s'. Is longer than 100 characters.", searchTerm))
-                            .build());
+                    errors.add(ValidationError.of(SEARCH_TERMS_FIELD,
+                            String.format("'%s'. Is longer than 100 characters.", searchTerm)));
             });
         } catch (NullPointerException e) {
-            errors.add(ValidationError.builder()
-                    .fieldName(SEARCH_TERMS_FIELD)
-                    .errorMessage("Field must be present.")
-                    .build());
+            errors.add(ValidationError.of(SEARCH_TERMS_FIELD, "Field must be present."));
         }
     }
 
@@ -78,10 +62,8 @@ public final class UserRequestValidator {
         if (request.getExcludedTerms() != null) {
             request.getExcludedTerms().stream().forEach((excludedTerm) -> {
                 if (excludedTerm.length() > 100)
-                    errors.add(ValidationError.builder()
-                            .fieldName(EXCLUDED_TERMS_FIELD)
-                            .errorMessage(String.format("'%s'. Is longer than 100 characters.", excludedTerm))
-                            .build());
+                    errors.add(ValidationError.of(EXCLUDED_TERMS_FIELD,
+                            String.format("'%s'. Is longer than 100 characters.", excludedTerm)));
             });
         }
     }
@@ -89,18 +71,13 @@ public final class UserRequestValidator {
     private static void validateSources(UserRequest request, SourceRepository sourceRepository) {
         if (request.getSources() != null) {
             if (request.getSources().size() > 20) {
-                errors.add(ValidationError.builder()
-                        .fieldName(SOURCES_FIELD)
-                        .errorMessage("20 or less sources allowed.")
-                        .build());
+                errors.add(ValidationError.of(SOURCES_FIELD, "20 or less sources allowed."));
             }
             for (String source : request.getSources()) {
                 Source s = sourceRepository.findByName(source);
                 if (s == null) {
-                    errors.add(ValidationError.builder()
-                            .fieldName(SOURCES_FIELD)
-                            .errorMessage(String.format("Source with name provided is invalid. Name: '%s'.", source))
-                            .build());
+                    errors.add(ValidationError.of(SOURCES_FIELD,
+                            String.format("Source with name provided is invalid. Name: '%s'.", source)));
                 }
             }
         }
@@ -108,10 +85,7 @@ public final class UserRequestValidator {
 
     private static void validateFrom(UserRequest request) {
         if (request.getFrom() != null && request.getFrom().isAfter(LocalDateTime.now())) {
-            errors.add(ValidationError.builder()
-                    .fieldName(FROM_FIELD)
-                    .errorMessage("Date is later than today.")
-                    .build());
+            errors.add(ValidationError.of(FROM_FIELD, "Date is later than today."));
         }
     }
 
