@@ -13,7 +13,7 @@ import static com.bachelors.nss.rest.helpers.DatabaseHandler.getClientInfo;
 public class DatabaseController {
 
     @GetMapping("/getInfo")
-    private ResponseEntity<Object> getUserInfo(@RequestParam String name) {
+    ResponseEntity<Object> getUserInfo(@RequestParam String name) {
         return getClientInfo(name);
     }
 

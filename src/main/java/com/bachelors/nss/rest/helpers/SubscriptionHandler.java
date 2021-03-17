@@ -151,8 +151,9 @@ public class SubscriptionHandler {
 
     static Set<Source> getSources(Set<String> sources) {
         Set<Source> s = new HashSet<>();
-        for (String source : sources)
-            s.add(sourceRepository.findByName(source));
+        if (sources != null && !sources.isEmpty()) {
+            sources.forEach( (source) -> s.add(sourceRepository.findByName(source)));
+        }
         return s;
     }
 

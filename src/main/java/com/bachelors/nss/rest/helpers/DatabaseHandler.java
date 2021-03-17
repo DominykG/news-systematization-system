@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 public class DatabaseHandler {
-    static ClientRepository clientRepository;
+
+    private static ClientRepository clientRepository;
 
     @Autowired
     public DatabaseHandler(ClientRepository clientRepository) {
@@ -22,6 +23,6 @@ public class DatabaseHandler {
             return ResponseEntity.badRequest().body("No client with name " + name);
         }
         return ResponseEntity.ok(response);
-
     }
+
 }
