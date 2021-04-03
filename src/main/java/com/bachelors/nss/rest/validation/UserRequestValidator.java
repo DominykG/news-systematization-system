@@ -5,7 +5,6 @@ import com.bachelors.nss.db.repositories.SourceRepository;
 import com.bachelors.nss.errors.ValidationError;
 import com.bachelors.nss.rest.models.UserRequest;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +14,6 @@ public final class UserRequestValidator {
     private static final String SEARCH_TERMS_FIELD = "searchTerms";
     private static final String EXCLUDED_TERMS_FIELD = "excludedTerms";
     private static final String SOURCES_FIELD = "sources";
-    private static final String FROM_FIELD = "from";
 
     private static final Set<ValidationError> errors = new HashSet<>();
 
@@ -26,7 +24,6 @@ public final class UserRequestValidator {
         validateSearchTerms(request);
         validateExcludedTerms(request);
         validateSources(request, sourceRepository);
-        validateFrom(request);
 
         return errors;
     }
@@ -49,7 +46,7 @@ public final class UserRequestValidator {
                         "At least one search term must be present."));
             }
             request.getSearchTerms().stream().forEach((searchTerm) -> {
-                if (searchTerm.length() > 100)
+                if (searchTerm.length() > 30)
                     errors.add(ValidationError.of(SEARCH_TERMS_FIELD,
                             String.format("'%s'. Is longer than 100 characters.", searchTerm)));
             });
@@ -61,7 +58,7 @@ public final class UserRequestValidator {
     private static void validateExcludedTerms(UserRequest request) {
         if (request.getExcludedTerms() != null) {
             request.getExcludedTerms().stream().forEach((excludedTerm) -> {
-                if (excludedTerm.length() > 100)
+                if (excludedTerm.length() > 30)
                     errors.add(ValidationError.of(EXCLUDED_TERMS_FIELD,
                             String.format("'%s'. Is longer than 100 characters.", excludedTerm)));
             });
@@ -80,12 +77,6 @@ public final class UserRequestValidator {
                             String.format("Source with name provided is invalid. Name: '%s'.", source)));
                 }
             }
-        }
-    }
-
-    private static void validateFrom(UserRequest request) {
-        if (request.getFrom() != null && request.getFrom().isAfter(LocalDateTime.now())) {
-            errors.add(ValidationError.of(FROM_FIELD, "Date is later than today."));
         }
     }
 

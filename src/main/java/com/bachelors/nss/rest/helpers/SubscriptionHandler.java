@@ -12,14 +12,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.bachelors.nss.rest.validation.UserRequestValidator.validateUserRequest;
 
@@ -44,12 +39,7 @@ public class SubscriptionHandler {
 
         UserResponse response = generateUserResponse(request);
 
-        String filename = generateKafkaTopicScript(response.getKafkaTopicName());
-        executeKafkaTopicScript(filename);
-        deleteKafkaTopicScript(filename);
-
         addUserToDb(request.getName(),
-                request.getFrom(),
                 response.getSearchQuery(),
                 response.getSources(),
                 response.getKafkaTopicName());
@@ -86,48 +76,7 @@ public class SubscriptionHandler {
         return query.toString().replace("AND  NOT", "NOT");
     }
 
-    static String generateKafkaTopicScript(String topic) {
-        try {
-            String filename = topic + ".bat";
-            File kafkaTopicScript = new File(filename);
-            if (kafkaTopicScript.createNewFile()) {
-                log.info("File created: " + kafkaTopicScript.getName());
-            } else {
-                log.error("File already exists.");
-            }
-            FileWriter writer = new FileWriter(filename);
-            writer.write("D:\\_Bachelors\\kafka_2.13-2.6.0\\bin\\windows\\kafka-topics.bat --create --topic "
-                    + topic + " --bootstrap-server localhost:9092");
-            writer.close();
-
-            return filename;
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return null;
-    }
-
-    static void executeKafkaTopicScript(String filename) {
-        try {
-            Runtime.getRuntime().exec("cmd /c " + filename); //add `start \"\"` after `/c` to see the console
-            TimeUnit.SECONDS.sleep(1L);
-            log.info("File executed: " + filename);
-        } catch (IOException | InterruptedException e) {
-            log.error(e);
-        }
-    }
-
-    static void deleteKafkaTopicScript(String filename) {
-        File kafkaTopicScript = new File(filename);
-        if (kafkaTopicScript.delete()) {
-            log.info("File deleted: " + kafkaTopicScript.getName());
-        } else {
-            log.error("Failed to delete the file.");
-        }
-    }
-
     static void addUserToDb(String name,
-                            LocalDateTime from,
                             String searchQuery,
                             Set<Source> sources,
                             String kafkaTopic) {
@@ -138,10 +87,6 @@ public class SubscriptionHandler {
                 .assignedKafkaTopic(kafkaTopic)
                 .build();
 
-        if (from != null) {
-            client.setDateFrom(from);
-        }
-
         for (Source source : sources) {
             source.getClients().add(client);
         }
@@ -150,20 +95,19 @@ public class SubscriptionHandler {
     }
 
     static Set<Source> getSources(Set<String> sources) {
-        Set<Source> s = new HashSet<>();
+        Set<Source> sourceSet = new HashSet<>();
         if (sources != null && !sources.isEmpty()) {
-            sources.forEach( (source) -> s.add(sourceRepository.findByName(source)));
+            sources.forEach( (source) -> sourceSet.add(sourceRepository.findByName(source)));
         }
-        return s;
+        return sourceSet;
     }
 
     public static ResponseEntity<Object> unsubscribe(String topic) {
         try {
             clientRepository.deleteById(topic);
+            return ResponseEntity.ok("You have been successfully unsubscribed");
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.badRequest().body("No such topic exists");
         }
-
-        return ResponseEntity.ok("You have been successfully unsubscribed");
     }
 }

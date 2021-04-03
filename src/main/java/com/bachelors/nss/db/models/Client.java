@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,11 +26,6 @@ public class Client implements Serializable {
 
     @Column(name = "C_QUERY", nullable = false, updatable = false)
     private String query;
-
-    @Setter
-    @Builder.Default
-    @Column(name = "C_DATE_FROM")
-    private LocalDateTime dateFrom = LocalDateTime.now();
 
     @ManyToMany
     @JoinTable(

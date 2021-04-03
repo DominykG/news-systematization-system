@@ -1,1 +1,1 @@
-D:\_Bachelors\kafka_2.13-2.6.0\bin\windows\kafka-console-consumer.bat --topic cryptoman-6d317383-b6cf-4995-b467-cf377cd4a353 --from-beginning --bootstrap-server localhost:9092
+D:\_Bachelors\kafka_2.13-2.6.0\bin\windows\kafka-console-consumer.bat --topic zoo-90d45934-eef7-4dea-95a9-0ffaab2f6937 --from-beginning --bootstrap-server localhost:9092
