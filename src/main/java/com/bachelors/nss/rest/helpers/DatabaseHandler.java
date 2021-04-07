@@ -1,6 +1,7 @@
 package com.bachelors.nss.rest.helpers;
 
 import com.bachelors.nss.db.repositories.ClientRepository;
+import com.bachelors.nss.db.repositories.SourceRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,12 @@ import org.springframework.stereotype.Component;
 public class DatabaseHandler {
 
     private static ClientRepository clientRepository;
+    private static SourceRepository sourceRepository;
 
     @Autowired
-    public DatabaseHandler(ClientRepository clientRepository) {
+    public DatabaseHandler(ClientRepository clientRepository, SourceRepository sourceRepository) {
         DatabaseHandler.clientRepository = clientRepository;
+        DatabaseHandler.sourceRepository = sourceRepository;
     }
 
     public static ResponseEntity<Object> getClientInfo(String name) {
@@ -23,6 +26,10 @@ public class DatabaseHandler {
             return ResponseEntity.badRequest().body("No client with name " + name);
         }
         return ResponseEntity.ok(response);
+    }
+
+    public static ResponseEntity<Object> getSourceList() {
+        return ResponseEntity.ok(sourceRepository.findAll());
     }
 
 }
