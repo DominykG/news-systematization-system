@@ -1,7 +1,7 @@
-package com.bachelors.nss.rest.controllers;
+package com.bachelors.nss.api.controllers;
 
-import com.bachelors.nss.rest.helpers.SubscriptionHandler;
-import com.bachelors.nss.rest.models.UserRequest;
+import com.bachelors.nss.business.helpers.SubscriptionHandler;
+import com.bachelors.nss.business.models.UserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

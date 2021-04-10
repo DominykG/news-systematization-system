@@ -1,9 +1,9 @@
-package com.bachelors.nss.rest.validation;
+package com.bachelors.nss.business.validation;
 
-import com.bachelors.nss.db.models.Source;
-import com.bachelors.nss.db.repositories.SourceRepository;
-import com.bachelors.nss.errors.ValidationError;
-import com.bachelors.nss.rest.models.UserRequest;
+import com.bachelors.nss.business.models.UserRequest;
+import com.bachelors.nss.database.models.Source;
+import com.bachelors.nss.database.repositories.SourceRepository;
+import com.bachelors.nss.business.errors.ValidationError;
 
 import java.util.HashSet;
 import java.util.Set;

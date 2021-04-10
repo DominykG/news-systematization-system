@@ -1,4 +1,4 @@
-package com.bachelors.nss.errors;
+package com.bachelors.nss.business.errors;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

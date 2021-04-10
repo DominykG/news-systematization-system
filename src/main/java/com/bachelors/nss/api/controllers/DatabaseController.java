@@ -1,4 +1,4 @@
-package com.bachelors.nss.rest.controllers;
+package com.bachelors.nss.api.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.bachelors.nss.rest.helpers.DatabaseHandler.getClientInfo;
-import static com.bachelors.nss.rest.helpers.DatabaseHandler.getSourceList;
+import static com.bachelors.nss.business.helpers.DatabaseHandler.getClientInfo;
+import static com.bachelors.nss.business.helpers.DatabaseHandler.getSourceList;
 
 @RestController
 @RequestMapping("/nss/v2/")

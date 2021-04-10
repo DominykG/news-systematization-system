@@ -1,4 +1,4 @@
-package com.bachelors.nss.rest.models;
+package com.bachelors.nss.business.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

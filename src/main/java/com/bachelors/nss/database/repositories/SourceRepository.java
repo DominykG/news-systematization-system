@@ -1,6 +1,6 @@
-package com.bachelors.nss.db.repositories;
+package com.bachelors.nss.database.repositories;
 
-import com.bachelors.nss.db.models.Source;
+import com.bachelors.nss.database.models.Source;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,10 +1,8 @@
-package com.bachelors.nss.rest.models;
+package com.bachelors.nss.business.models;
 
-import com.bachelors.nss.db.models.Source;
+import com.bachelors.nss.database.models.Source;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Set;
 

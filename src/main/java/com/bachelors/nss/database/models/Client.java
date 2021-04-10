@@ -1,4 +1,4 @@
-package com.bachelors.nss.db.models;
+package com.bachelors.nss.database.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;

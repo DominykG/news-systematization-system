@@ -1,7 +1,7 @@
-package com.bachelors.nss.rest.helpers;
+package com.bachelors.nss.business.helpers;
 
-import com.bachelors.nss.db.repositories.ClientRepository;
-import com.bachelors.nss.db.repositories.SourceRepository;
+import com.bachelors.nss.database.repositories.ClientRepository;
+import com.bachelors.nss.database.repositories.SourceRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

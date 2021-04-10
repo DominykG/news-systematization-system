@@ -1,11 +1,12 @@
-package com.bachelors.nss.rest.helpers;
+package com.bachelors.nss.business.helpers;
 
-import com.bachelors.nss.db.models.Client;
-import com.bachelors.nss.db.models.Source;
-import com.bachelors.nss.db.repositories.ClientRepository;
-import com.bachelors.nss.db.repositories.SourceRepository;
-import com.bachelors.nss.rest.models.UserRequest;
-import com.bachelors.nss.rest.models.UserResponse;
+import com.bachelors.nss.business.models.UserRequest;
+import com.bachelors.nss.business.models.UserResponse;
+import com.bachelors.nss.business.validation.UserRequestValidator;
+import com.bachelors.nss.database.models.Client;
+import com.bachelors.nss.database.models.Source;
+import com.bachelors.nss.database.repositories.ClientRepository;
+import com.bachelors.nss.database.repositories.SourceRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import static com.bachelors.nss.rest.validation.UserRequestValidator.validateUserRequest;
 
 @Log4j2
 @Component
@@ -32,7 +31,7 @@ public class SubscriptionHandler {
     }
 
     public static ResponseEntity<Object> subscribe(UserRequest request) {
-        var errors = validateUserRequest(request, sourceRepository);
+        var errors = UserRequestValidator.validateUserRequest(request, sourceRepository);
 
         if(!errors.isEmpty())
             return ResponseEntity.badRequest().body(errors);
