@@ -35,4 +35,13 @@ public class Client implements Serializable {
     )
     @JsonManagedReference
     private Set<Source> sources = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "CLIENT_RSS",
+            joinColumns = { @JoinColumn(name = "CLIENT_ID") },
+            inverseJoinColumns = { @JoinColumn(name = "RSS_ID") }
+    )
+    @JsonManagedReference
+    private Set<RssFeed> rssFeeds = new HashSet<>();
 }

@@ -1,6 +1,7 @@
 package com.bachelors.nss.business.helpers;
 
 import com.bachelors.nss.database.repositories.ClientRepository;
+import com.bachelors.nss.database.repositories.RssFeedRepository;
 import com.bachelors.nss.database.repositories.SourceRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,15 @@ public class DatabaseHandler {
 
     private static ClientRepository clientRepository;
     private static SourceRepository sourceRepository;
+    private static RssFeedRepository rssFeedRepository;
 
     @Autowired
-    public DatabaseHandler(ClientRepository clientRepository, SourceRepository sourceRepository) {
+    public DatabaseHandler(ClientRepository clientRepository,
+                           SourceRepository sourceRepository,
+                           RssFeedRepository rssFeedRepository) {
         DatabaseHandler.clientRepository = clientRepository;
         DatabaseHandler.sourceRepository = sourceRepository;
+        DatabaseHandler.rssFeedRepository = rssFeedRepository;
     }
 
     public static ResponseEntity<Object> getClientInfo(String name) {
@@ -30,6 +35,10 @@ public class DatabaseHandler {
 
     public static ResponseEntity<Object> getSourceList() {
         return ResponseEntity.ok(sourceRepository.findAll());
+    }
+
+    public static ResponseEntity<Object> getRssFeedList() {
+        return ResponseEntity.ok(rssFeedRepository.findAll());
     }
 
 }

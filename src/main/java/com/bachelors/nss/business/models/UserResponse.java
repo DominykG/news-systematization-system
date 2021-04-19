@@ -1,5 +1,6 @@
 package com.bachelors.nss.business.models;
 
+import com.bachelors.nss.database.models.RssFeed;
 import com.bachelors.nss.database.models.Source;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,5 +18,6 @@ public class UserResponse {
     private final String kafkaTopicName;
     private final String searchQuery;
     private final Set<Source> sources;
+    private final Set<RssFeed> rssFeeds;
 
 }

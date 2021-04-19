@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.bachelors.nss.business.helpers.DatabaseHandler.getClientInfo;
-import static com.bachelors.nss.business.helpers.DatabaseHandler.getSourceList;
+import static com.bachelors.nss.business.helpers.DatabaseHandler.*;
 
 @RestController
 @RequestMapping("/nss/v2/")
@@ -21,6 +20,11 @@ public class DatabaseController {
     @GetMapping("/getSources")
     ResponseEntity<Object> getSources() {
         return getSourceList();
+    }
+
+    @GetMapping("/getRssFeeds")
+    ResponseEntity<Object> getRssFeeds() {
+        return getRssFeedList();
     }
 
 }

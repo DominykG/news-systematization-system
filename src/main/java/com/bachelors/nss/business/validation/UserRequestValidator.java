@@ -1,11 +1,14 @@
 package com.bachelors.nss.business.validation;
 
-import com.bachelors.nss.business.models.UserRequest;
-import com.bachelors.nss.database.models.Source;
-import com.bachelors.nss.database.repositories.SourceRepository;
 import com.bachelors.nss.business.errors.ValidationError;
+import com.bachelors.nss.business.models.UserRequest;
+import com.bachelors.nss.database.models.RssFeed;
+import com.bachelors.nss.database.models.Source;
+import com.bachelors.nss.database.repositories.RssFeedRepository;
+import com.bachelors.nss.database.repositories.SourceRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public final class UserRequestValidator {
@@ -14,16 +17,20 @@ public final class UserRequestValidator {
     private static final String SEARCH_TERMS_FIELD = "searchTerms";
     private static final String EXCLUDED_TERMS_FIELD = "excludedTerms";
     private static final String SOURCES_FIELD = "sources";
+    private static final String RSS_FEED_FIELD = "rssFeeds";
 
     private static final Set<ValidationError> errors = new HashSet<>();
 
-    public static Set<ValidationError> validateUserRequest(UserRequest request, SourceRepository sourceRepository) {
+    public static Set<ValidationError> validateUserRequest(UserRequest request,
+                                                           SourceRepository sourceRepository,
+                                                           RssFeedRepository rssFeedRepository) {
         errors.clear();
 
         validateName(request);
         validateSearchTerms(request);
         validateExcludedTerms(request);
         validateSources(request, sourceRepository);
+        validateRssFeeds(request, rssFeedRepository);
 
         return errors;
     }
@@ -75,6 +82,18 @@ public final class UserRequestValidator {
                 if (s == null) {
                     errors.add(ValidationError.of(SOURCES_FIELD,
                             String.format("Source with name provided is invalid. Name: '%s'.", source)));
+                }
+            }
+        }
+    }
+
+    private static void validateRssFeeds(UserRequest request, RssFeedRepository rssFeedRepository) {
+        if (request.getRssFeeds() != null) {
+            for (String rssFeed : request.getRssFeeds()) {
+                Optional<RssFeed> rss = rssFeedRepository.findById(rssFeed);
+                if (rss.isEmpty()) {
+                    errors.add(ValidationError.of(RSS_FEED_FIELD,
+                            String.format("RSS Feed with name provided is invalid. Name: '%s'.", rssFeed)));
                 }
             }
         }

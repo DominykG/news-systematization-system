@@ -4,8 +4,10 @@ import com.bachelors.nss.business.models.UserRequest;
 import com.bachelors.nss.business.models.UserResponse;
 import com.bachelors.nss.business.validation.UserRequestValidator;
 import com.bachelors.nss.database.models.Client;
+import com.bachelors.nss.database.models.RssFeed;
 import com.bachelors.nss.database.models.Source;
 import com.bachelors.nss.database.repositories.ClientRepository;
+import com.bachelors.nss.database.repositories.RssFeedRepository;
 import com.bachelors.nss.database.repositories.SourceRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,21 @@ public class SubscriptionHandler {
 
     private static ClientRepository clientRepository;
     private static SourceRepository sourceRepository;
+    private static RssFeedRepository rssFeedRepository;
 
     @Autowired
-    public SubscriptionHandler(ClientRepository clientRepository, SourceRepository sourceRepository) {
+    public SubscriptionHandler(ClientRepository clientRepository,
+                               SourceRepository sourceRepository,
+                               RssFeedRepository rssFeedRepository) {
         SubscriptionHandler.clientRepository = clientRepository;
         SubscriptionHandler.sourceRepository = sourceRepository;
+        SubscriptionHandler.rssFeedRepository = rssFeedRepository;
     }
 
     public static ResponseEntity<Object> subscribe(UserRequest request) {
-        var errors = UserRequestValidator.validateUserRequest(request, sourceRepository);
+        var errors = UserRequestValidator.validateUserRequest(request,
+                                                                                sourceRepository,
+                                                                                rssFeedRepository);
 
         if(!errors.isEmpty())
             return ResponseEntity.badRequest().body(errors);
@@ -41,6 +49,7 @@ public class SubscriptionHandler {
         addUserToDb(request.getName(),
                 response.getSearchQuery(),
                 response.getSources(),
+                response.getRssFeeds(),
                 response.getKafkaTopicName());
 
         return ResponseEntity.ok(response);
@@ -52,6 +61,7 @@ public class SubscriptionHandler {
                 .kafkaTopicName(generateKafkaTopicName(request.getName()))
                 .searchQuery(generateSearchQuery(request))
                 .sources(getSources(request.getSources()))
+                .rssFeeds(getRssFeeds(request.getRssFeeds()))
                 .build();
     }
 
@@ -78,16 +88,22 @@ public class SubscriptionHandler {
     static void addUserToDb(String name,
                             String searchQuery,
                             Set<Source> sources,
+                            Set<RssFeed> rssFeeds,
                             String kafkaTopic) {
         Client client = Client.builder()
+                .assignedKafkaTopic(kafkaTopic)
                 .name(name)
                 .query(searchQuery)
                 .sources(sources)
-                .assignedKafkaTopic(kafkaTopic)
+                .rssFeeds(rssFeeds)
                 .build();
 
         for (Source source : sources) {
             source.getClients().add(client);
+        }
+
+        for (RssFeed rssFeed : rssFeeds) {
+            rssFeed.getClients().add(client);
         }
 
         clientRepository.save(client);
@@ -99,6 +115,14 @@ public class SubscriptionHandler {
             sources.forEach( (source) -> sourceSet.add(sourceRepository.findByName(source)));
         }
         return sourceSet;
+    }
+
+    static Set<RssFeed> getRssFeeds(Set<String> rssFeeds) {
+        Set<RssFeed> rssFeedSet = new HashSet<>();
+        if (rssFeeds != null && !rssFeeds.isEmpty()) {
+            rssFeeds.forEach( (rssFeed) -> rssFeedSet.add(rssFeedRepository.findById(rssFeed).isPresent() ? rssFeedRepository.findById(rssFeed).get() : null));
+        }
+        return rssFeedSet;
     }
 
     public static ResponseEntity<Object> unsubscribe(String topic) {

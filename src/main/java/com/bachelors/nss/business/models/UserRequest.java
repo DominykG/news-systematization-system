@@ -13,6 +13,7 @@ public class UserRequest {
     private final Set<String> searchTerms;
     private final Set<String> excludedTerms;
     private final Set<String> sources;
+    private final Set<String> rssFeeds;
 
 }
 
