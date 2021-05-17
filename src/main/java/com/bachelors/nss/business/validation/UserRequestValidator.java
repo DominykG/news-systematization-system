@@ -38,7 +38,7 @@ public final class UserRequestValidator {
     private static void validateName(UserRequest request) {
         try {
             if (request.getName().length() < 3 || request.getName().length() > 20) {
-                errors.add(ValidationError.of(  NAME_FIELD,
+                errors.add(ValidationError.of(NAME_FIELD,
                         "Name must be more than 3 and less than 20 characters long."));
             }
         } catch (NullPointerException e) {
@@ -55,8 +55,12 @@ public final class UserRequestValidator {
             request.getSearchTerms().stream().forEach((searchTerm) -> {
                 if (searchTerm.length() > 30)
                     errors.add(ValidationError.of(SEARCH_TERMS_FIELD,
-                            String.format("'%s'. Is longer than 100 characters.", searchTerm)));
+                            String.format("'%s'. Is longer than 30 characters.", searchTerm)));
             });
+            if (request.getSearchTerms().stream().mapToInt(String::length).sum() > 300) {
+                errors.add(ValidationError.of(SEARCH_TERMS_FIELD,
+                        "Search terms specified are too long or there are too many."));
+            }
         } catch (NullPointerException e) {
             errors.add(ValidationError.of(SEARCH_TERMS_FIELD, "Field must be present."));
         }
@@ -69,6 +73,10 @@ public final class UserRequestValidator {
                     errors.add(ValidationError.of(EXCLUDED_TERMS_FIELD,
                             String.format("'%s'. Is longer than 100 characters.", excludedTerm)));
             });
+            if (request.getExcludedTerms().stream().mapToInt(String::length).sum() > 200) {
+                errors.add(ValidationError.of(EXCLUDED_TERMS_FIELD,
+                        "Excluded terms specified are too long or there are too many."));
+            }
         }
     }
 
@@ -81,7 +89,8 @@ public final class UserRequestValidator {
                 Source s = sourceRepository.findByName(source);
                 if (s == null) {
                     errors.add(ValidationError.of(SOURCES_FIELD,
-                            String.format("Source with name provided is invalid. Name: '%s'.", source)));
+                            String.format("Source with name provided is invalid. Name: '%s'. "  +
+                                    "For available sources consult /nss/v2/getSources endpoint", source)));
                 }
             }
         }
@@ -93,7 +102,8 @@ public final class UserRequestValidator {
                 Optional<RssFeed> rss = rssFeedRepository.findById(rssFeed);
                 if (rss.isEmpty()) {
                     errors.add(ValidationError.of(RSS_FEED_FIELD,
-                            String.format("RSS Feed with name provided is invalid. Name: '%s'.", rssFeed)));
+                            String.format("RSS Feed with name provided is invalid. Name: '%s'. "  +
+                                    "For available sources consult /nss/v2/getRssFeeds endpoint", rssFeed)));
                 }
             }
         }

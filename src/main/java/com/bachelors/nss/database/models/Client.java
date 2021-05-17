@@ -24,7 +24,7 @@ public class Client implements Serializable {
     @Column(name = "C_NAME", nullable = false, updatable = false)
     private String name;
 
-    @Column(name = "C_QUERY", nullable = false, updatable = false)
+    @Column(name = "C_QUERY", nullable = false, updatable = false, length = 1000)
     private String query;
 
     @ManyToMany

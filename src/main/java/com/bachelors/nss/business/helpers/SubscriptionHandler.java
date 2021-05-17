@@ -52,7 +52,7 @@ public class SubscriptionHandler {
                 response.getRssFeeds(),
                 response.getKafkaTopicName());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
     private static UserResponse generateUserResponse(UserRequest request) {

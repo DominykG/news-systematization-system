@@ -30,15 +30,15 @@ public class DatabaseHandler {
         if (response.getBody().isEmpty()) {
             return ResponseEntity.badRequest().body("No client with name " + name);
         }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
     public static ResponseEntity<Object> getSourceList() {
-        return ResponseEntity.ok(sourceRepository.findAll());
+        return ResponseEntity.ok().body(sourceRepository.findAll());
     }
 
     public static ResponseEntity<Object> getRssFeedList() {
-        return ResponseEntity.ok(rssFeedRepository.findAll());
+        return ResponseEntity.ok().body(rssFeedRepository.findAll());
     }
 
 }
